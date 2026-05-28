@@ -136,6 +136,8 @@ class MainWindow(QMainWindow):
         edit_menu.addSeparator()
         edit_menu.addAction("Add Cell Type...", self._cell_type_panel._add_clicked)
         edit_menu.addAction("Delete Cell Type", lambda: self._cell_type_panel._remove_clicked())
+        edit_menu.addSeparator()
+        edit_menu.addAction("Delete Progress", self._on_delete_progress)
 
         view_menu = menu_bar.addMenu("&View")
         view_menu.addAction("Zoom &In", self._viewport._zoom_in, "Ctrl+=")
@@ -403,6 +405,32 @@ class MainWindow(QMainWindow):
         self._update_mask_colors_from_session()
         self._update_image_list()
         self._update_status()
+
+    def _on_delete_progress(self):
+        if not self._session:
+            return
+        reply = QMessageBox.warning(
+            self,
+            "Delete Progress",
+            "This will delete all classifications and cell types "
+            "for this folder. This action cannot be undone.\n\n"
+            "Continue?",
+            QMessageBox.Yes | QMessageBox.No,
+        )
+        if reply != QMessageBox.Yes:
+            return
+
+        config_path = self._session.folder / ".mancha"
+        if config_path.exists():
+            config_path.unlink()
+
+        self._session = Session.new(self._session.folder)
+        self._session.save()
+        self._cell_type_panel.load(self._session.cell_types)
+        self._image_list.load(self._pairs, self._session)
+        self._update_mask_colors_from_session()
+        self._update_status()
+        self._undo_manager.clear()
 
     def _show_about(self):
         QMessageBox.about(
