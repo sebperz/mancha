@@ -1,0 +1,37 @@
+# Bytecode
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Build
+build/
+dist/
+*.spec
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project artifacts
+.mancha
+.mancha.corrupt
+mancha-*.csv
+
+# Environment
+.env
